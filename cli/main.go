@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/katnegermis/pocketmine-rcon"
+	rcon "github.com/micvbang/pocketmine-rcon"
 )
 
 func main() {
@@ -48,12 +48,22 @@ func main() {
 			prompt()
 			continue
 		}
-
-		fmt.Printf("Server:\n%s\n", r)
+		// this is where I gotta make it.
+		fmt.Printf("Server:\n%s\n", sanitizeResponse(r))
 		prompt()
 	}
 }
 
 func prompt() {
 	fmt.Print("Enter command:\n>")
+}
+
+// todo - maybe skip if we don't have xterm colors or are on windoze.
+func sanitizeResponse(response string) string {
+	mcColors := getMinecraftColors()
+	for i := range mcColors {
+		targetColor := getConsoleColor(mcColors[i])
+		response = strings.ReplaceAll(response, mcColors[i], targetColor)
+	}
+	return string(response)
 }
